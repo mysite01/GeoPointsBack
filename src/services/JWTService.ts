@@ -6,11 +6,7 @@ import { login } from "../services/AuthenticationService";
  */
 export async function verifyPasswordAndCreateJWT(name: string, password: string): Promise<string | undefined> {
     const secret = process.env.JWT_SECRET;
-    const ttl: string | number = process.env.JWT_TTL
-    ? isNaN(Number(process.env.JWT_TTL))
-        ? process.env.JWT_TTL // Falls es ein gültiger String-Wert ist (z. B. "1h")
-        : Number(process.env.JWT_TTL) // Falls es eine Zahl ist (z. B. "3600")
-    : "1h";
+    const ttl = process.env.JWT_TTL || "1h"; // Standardwert für TTL (1 Stunde)
 
     if (!secret) {
         throw new Error("Umgebungsvariable JWT_SECRET ist nicht gesetzt.");
@@ -26,7 +22,7 @@ export async function verifyPasswordAndCreateJWT(name: string, password: string)
     };
 
     const jwtString = sign(payload, secret, {
-        expiresIn: ttl,
+        expiresIn: ttl as string | number,
         algorithm: "HS256",
     });
 
