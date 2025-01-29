@@ -5,7 +5,8 @@ import { login } from "../services/AuthenticationService";
  * Überprüft Passwort und erstellt ein JWT, falls erfolgreich.
  */
 export async function verifyPasswordAndCreateJWT(name: string, password: string): Promise<string | undefined> {
-    const secret = process.env.JWT_SECRET;
+  const secret: string = process.env.JWT_SECRET as string;
+
     const ttl = process.env.JWT_TTL || "1h"; // Standardwert für TTL (1 Stunde)
 
     if (!secret) {
@@ -22,7 +23,7 @@ export async function verifyPasswordAndCreateJWT(name: string, password: string)
     };
 
     const jwtString = sign(payload, secret, {
-        expiresIn: ttl as string | number,
+        expiresIn: ttl,
         algorithm: "HS256",
     });
 
